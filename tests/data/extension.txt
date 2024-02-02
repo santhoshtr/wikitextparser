@@ -1,0 +1,3 @@
+<nowiki/>
+<ref name="meller"/>
+<ref name="meller">{{cite journal |last1=Mellor |first1=Emma L. |last2=McDonald Kinkaid |first2=Heather K. |last3=Mendl |first3=Michael T. |last4=Cuthill |first4=Innes C. |last5=van Zeeland |first5=Yvonne R. A. |last6=Mason |first6=Georgia J. |title=Nature calls: intelligence and natural foraging style predict poor welfare in captive parrots |journal=Proceedings of the Royal Society B: Biological Sciences |date=6 October 2021 |volume=288 |issue=1960 |doi=10.1098/rspb.2021.1952 |pmid=34610768 |pmc=8493207 }}</ref>

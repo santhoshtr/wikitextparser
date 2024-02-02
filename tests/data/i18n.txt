@@ -1,0 +1,2 @@
+There are {{plural:$0|one apple|$0 apples|12=a [[dozen]] apples}} in the [[Basket|basket]].
+

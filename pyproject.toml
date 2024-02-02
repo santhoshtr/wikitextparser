@@ -1,0 +1,55 @@
+[project]
+name = "wikitextparser"
+version = "0.1"
+description = "Wiki Markup Parser"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Santhosh Thottingal"}]
+license = {text = "Apache-2.0"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+dependencies = [
+   "lark[regex]",
+   "rich",
+   "pydot",
+   "Babel"
+]
+
+[project.optional-dependencies]
+test = [
+    'pytest',
+]
+dev = [
+    "ruff",
+    "tox",
+]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/santhoshtr/wikitextparser"
+Changelog = "https://github.com/santhoshtr/wikitextparser/releases"
+Issues = "https://github.com/santhoshtr/wikitextparser/issues"
+CI = "https://github.com/santhoshtr/wikitextparser/actions"
+

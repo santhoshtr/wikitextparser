@@ -1,0 +1,2 @@
+<s>Strike that!</s>
+<s>Strike [[that]]!</s>

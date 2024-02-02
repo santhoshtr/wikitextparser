@@ -1,0 +1,96 @@
+start: (wikitext | heading | horizontalrule | indent | NEWLINE )*
+heading: heading2
+    | heading3
+    | heading4
+    | heading5
+    | heading6
+heading2: "==" TEXT "=="
+heading3: "===" TEXT "==="
+heading4: "====" TEXT "===="
+heading5: "=====" TEXT "====="
+heading6: "======" TEXT "======"
+
+// Links
+wikilink: "[[" title "]]"
+    | "[[" title ("|" tparam )+ "]]" // Piped link
+title:  (namespace ":")? TEXT
+namespace: TEXT
+externallink: "[" URL "]"
+    |  "[" URL WHITESPACE+ TEXT "]" // Named external link
+headerlink: "/*" TEXT "*/"
+redirect: "#REDIRECT" wikilink
+
+// Text stylings
+emphasis: "''" TEXT "''"
+strong: "'''" TEXT "'''"
+strongemphasis: "'''''" TEXT "'''''"
+strike: "<s>" wikitext+ "</s>"
+indent: /:{1,}/ TEXT
+
+// Transclusions
+template: "{{" templatename   ( "|" tparam)* "}}"
+plural: "{{" "plural" ":" PLACEHOLDER   ( "|" tparam)* "}}"
+tplarg: "{{{" TEXT ( "|" tparam)* "}}}"
+templatename: /[a-zA-Z0-9_ ]+/ // FIXME
+tparam: (tparamname "=")? tparamvalue
+tparamname: TEXT
+tparamvalue: wikitext+
+
+code: NEWLINE " " TEXT
+usersignature: /~{3}/
+usersignaturedate: /~{4}/
+currentdate: /~{5}/
+horizontalrule: /~{4,}/
+// FIXME
+extension: "<" extensionname (WHITESPACE attribute)* WHITESPACE* "/>"
+    | "<" extensionname (WHITESPACE attribute)* ">" wikitext* "</" extensionname ">"
+extensionname: /[^ =\/>]+/
+attribute: ATTRNAME "=" "\"" ATTRVALUE  "\""
+// Inline expansion of wikitext items in wikitext.
+// This is not required for parsing Wikitext, but required for
+// i18n where {{plural:$1|wikitext|..}} will be replaced by an
+// array of wikitext nodes. The lark transformer model
+// does not support one-many expansions. In addition to that,
+// wikitext: (code|link|template|wikitext) will not be parsed
+// by an LALR parser. Hence this hack. Replace all those 🧩
+// at postprocessing stage.
+expanded: "🧩" wikitext+ "🧩"
+wikitext: (code
+    | wikilink | externallink | headerlink
+    | emphasis | strong | strongemphasis
+    | strike
+    | comment
+    | usersignature | usersignaturedate | currentdate
+    | redirect
+    | template | tplarg | plural
+    | extension
+    | expanded
+    | PLACEHOLDER
+    | TEXT )
+
+URL: /http[s]?:\/\/[^\s]+/
+comment: /<!--[\s\S]*-->/
+
+// ======= TERMINALS =========
+WHITESPACE: (" " | /\t/ )+
+TITLETEXT: /([^={2,6}\[{1,2}\]{1,2}'{2,5}\|]+)/
+// For i18n
+PLACEHOLDER: /\$\d+/
+// Any character other than template openings, link openings,
+// bold/italic openings
+// New line not allowed.
+// Whitespaces allowed
+// Digits allowed
+TEXT:  /([^={2,6}\[{1,2}\]{1,2}'{2,5}\|\n\$🧩<]+|\d+|[\.,\?\!;]+| +)+/
+ATTRNAME: /[-_\u0041-\u005A\d\u003F-\uD77F\u0600-\uFFFD\U00010000-\U0010FFFF]+/
+ATTRVALUE: /[ ,-_\u0041-\u005A\d\u003F-\uD77F\u0600-\uFFFD\U00010000-\U0010FFFF]+/
+
+%import common.WS
+%import common.CNAME
+%import common.QUOTES
+%import common.ESCAPED_CHAR
+%import common.NEWLINE
+%import common.SYMBOL
+%import common.LETTER
+%import common.DIGIT
+%import common.URL
